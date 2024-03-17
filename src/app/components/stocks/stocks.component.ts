@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FinancialsService } from '../../services/financials.service';
 import { Stock } from '../../interfaces/stock';
+import { StateStoreService } from '../../services/state-store.service';
 
 @Component({
   selector: 'app-stocks',
@@ -12,12 +13,10 @@ export class StocksComponent {
   selectedCountryId?:number;
   stocks: Stock[] = [];
 
-  constructor(private financialsService: FinancialsService) {
-    financialsService.selectedCountry.subscribe(x => 
-    {
-        this.getData(Number(x));
-    });
-  }
+  constructor(private financialsService: FinancialsService, private stateStore:StateStoreService) {
+   this.stateStore.getSelectedCountry().subscribe(x => {
+        this.getData(x);
+    });  }
 
   ngOnInit(): void {
   }

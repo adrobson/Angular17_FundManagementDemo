@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Country } from '../../interfaces/country';
 import { FinancialsService } from '../../services/financials.service';
+import { StateStoreService } from '../../services/state-store.service';
 
 @Component({
   selector: 'app-country-list',
@@ -10,12 +11,14 @@ import { FinancialsService } from '../../services/financials.service';
 
 export class CountryListComponent {
   
-  SelectedCountryId:number = 1;
+  SelectedCountryId?:number;
   countrys:Country[] = [];
 
-  constructor(private financialsService: FinancialsService) {
-
-} 
+  constructor(private financialsService: FinancialsService, private stateStore:StateStoreService) {
+    if(stateStore.getSelectedCountryId() != -1){
+      this.SelectedCountryId = stateStore.getSelectedCountryId();
+    }
+  } 
 
   ngOnInit(): void {
     this.getCountrys();
@@ -30,6 +33,8 @@ export class CountryListComponent {
   }
 
   onChange(){
-    this.financialsService.selectCountry(this.SelectedCountryId);
+    if(this.SelectedCountryId != null){
+      this.stateStore.setSelectedCountry(this.SelectedCountryId); 
+    }
   }
 }
