@@ -1,0 +1,13 @@
+<h2>Funds list</h2>
+<app-country-list></app-country-list>
+
+<ul class="funds">
+    <li *ngFor="let fund of funds">
+        <button type="button">
+            <span class="Name">{{fund.name}}</span>
+            <span class="CountryId">{{fund.countryId}}</span>
+            <span class="Symbol">{{fund.symbol}}</span>
+            <span class="Price">{{fund.price}}</span>
+        </button>
+    </li>
+</ul>
