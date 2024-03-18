@@ -1,13 +1,6 @@
-<h2>Stocks list</h2>
-
 <app-country-list></app-country-list>
-<ul class="stocks">
-    <li *ngFor="let stock of stocks">
-        <button type="button">
-            <span class="Name">{{stock.name}}</span>
-            <span class="CountryId">{{stock.countryId}}</span>
-            <span class="Symbol">{{stock.symbol}}</span>
-            <span class="Price">{{stock.price}}</span>
-        </button>
-    </li>
-</ul>
+<h2>Stock List</h2>
+
+<div *ngIf="stocks$ | async as stocks">
+    <div *ngFor="let s of stocks">{{s.name}}</div>
+</div>

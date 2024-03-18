@@ -28,10 +28,12 @@ export class FinancialsService {
   }
 
   getFunds(selectedCountryId:number): Observable<Fund[]> {
+    console.log("getting funds for selected country id: " + selectedCountryId);
     return this.http.get<Fund[]>(this.fundsUrl + '?countryId=' + selectedCountryId);
   }
 
   getStocks(selectedCountryId:number): Observable<Stock[]> {
+    console.log("getting stocks for selected country id: " + selectedCountryId);
     return this.http.get<Stock[]>(this.stocksUrl + '?countryId=' + selectedCountryId);
   }
 

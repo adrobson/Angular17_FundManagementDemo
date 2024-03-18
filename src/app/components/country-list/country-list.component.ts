@@ -1,6 +1,12 @@
 import { Component } from '@angular/core';
 import { Country } from '../../interfaces/country';
-import { FinancialsService } from '../../services/financials.service';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { loadCountrys, selectCountry } from '../../store/actions/country.actions';
+import { OuterState } from '../../store/reducers/app.reducers';
+import { selectCountryList  } from '../../store/selectors/country-list.selector';
+import { selectSelectedCountry } from '../../store/selectors/selected-country.selector';
+
 
 @Component({
   selector: 'app-country-list',
@@ -10,26 +16,22 @@ import { FinancialsService } from '../../services/financials.service';
 
 export class CountryListComponent {
   
-  SelectedCountryId:number = 1;
-  countrys:Country[] = [];
+  countrys$: Observable<Country[]> = new Observable<Country[]>();
+  SelectedCountryId: number = 0;
 
-  constructor(private financialsService: FinancialsService) {
-
-} 
+  constructor(private store: Store<OuterState>) {
+    this.countrys$ = this.store.pipe(select(selectCountryList));
+    this.store.dispatch(loadCountrys());  
+  } 
 
   ngOnInit(): void {
-    this.getCountrys();
-  }
-
-  getCountrys(): void {
-    this.financialsService.getCountrys().subscribe(      
-      countrys => {
-        this.countrys = countrys; 
-      }
-    );
+    this.store.pipe(select(selectSelectedCountry)).subscribe(x => {
+            this.SelectedCountryId = x;
+        });
   }
 
   onChange(){
-    this.financialsService.selectCountry(this.SelectedCountryId);
+    console.log("country selected");
+    this.store.dispatch(selectCountry({selectedCountryId:this.SelectedCountryId})); 
   }
 }

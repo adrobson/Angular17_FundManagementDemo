@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
-import { FinancialsService } from '../../services/financials.service';
+import { Component } from'@angular/core';
 import { Fund } from '../../interfaces/fund';
-import { NgFor } from '@angular/common';
+import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { OuterState } from '../../store/reducers/app.reducers';
+import { selectFundList } from '../../store/selectors/fund-list.selector';
+import { selectSelectedCountry } from '../../store/selectors/selected-country.selector';
+import { loadFunds } from '../../store/actions/fund.actions';
+
 
 @Component({
   selector: 'app-funds',
@@ -10,24 +15,19 @@ import { NgFor } from '@angular/common';
 })
 export class FundsComponent {
   selectedCountryId?:number;
-  funds: Fund[] = [];
+  funds$:Observable<Fund[]> = new Observable<Fund[]>();
 
-  constructor(private financialsService: FinancialsService) {
-    financialsService.selectedCountry.subscribe(x => 
-    {
-        this.getData(Number(x));
-    });
+  constructor(private store:Store<OuterState>) {
+    this.funds$ = this.store.pipe(select(selectFundList));
   }
 
   ngOnInit(): void {
+    this.store.pipe(select(selectSelectedCountry)).subscribe(x => {
+      this.getData(x);
+    });
   }
   
-  getData(selectedCountryId:number): void {
-    this.financialsService.getFunds(selectedCountryId).subscribe(      
-      funds => {
-        this.funds = funds; 
-        console.log(funds);
-      }
-    );
-  }
+  getData(countryId:number): void {
+     this.store.dispatch(loadFunds({selectedCountryId:countryId}));
+  } 
 }
